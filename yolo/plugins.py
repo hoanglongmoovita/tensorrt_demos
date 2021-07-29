@@ -41,7 +41,8 @@ def get_yolo_whs(model_name, w, h):
             return [[w // 32, h // 32], [w // 16, h // 16], [w // 8, h // 8]]
     elif 'yolov4' in model_name:
         if 'tiny' in model_name:
-            return [[w // 32, h // 32], [w // 16, h // 16]]
+            # return [[w // 32, h // 32], [w // 16, h // 16]]
+            return [[w // 32, h // 32], [w // 16, h // 16], [w // 8, h // 8]] # For yolov4-tiny-3l
         else:
             return [[w // 8, h // 8], [w // 16, h // 16], [w // 32, h // 32]]
     else:
@@ -141,6 +142,9 @@ def add_yolo_plugins(network, model_name, num_classes, logger):
                 trt.PluginField("scaleXY", np.array(scales[i], dtype=np.float32), trt.PluginFieldType.FLOAT32),
             ]))
         ).get_output(0)
+        new_tensors[i].name = "yolo_" + str(i)
+        print(new_tensors[i].name)
+        print(new_tensors[i].shape)
 
     for new_tensor in new_tensors:
         network.mark_output(new_tensor)
@@ -148,3 +152,4 @@ def add_yolo_plugins(network, model_name, num_classes, logger):
         network.unmark_output(old_tensor)
 
     return network
+
