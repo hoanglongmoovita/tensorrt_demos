@@ -22,6 +22,7 @@ else ifeq ($(cpu_arch), x86_64)  # x86_64 PC
 else
   $(error Unkown CPU architecture: neither "aarch" nor "x86_64")
 endif
+compute=86
 
 NVCCFLAGS=-m64 -gencode arch=compute_$(compute),code=sm_$(compute) \
                -gencode arch=compute_$(compute),code=compute_$(compute)
